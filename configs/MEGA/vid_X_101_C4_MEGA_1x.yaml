@@ -1,0 +1,25 @@
+MODEL:
+  VID:
+    METHOD: "mega"
+    ROI_BOX_HEAD:
+      ATTENTION:
+        ENABLE: True
+        STAGE: 3
+  META_ARCHITECTURE: "GeneralizedRCNNMEGA"
+  # WEIGHT: "catalog://ImageNetPretrained/FAIR/20171220/X-101-32x8d"
+  WEIGHT: "catalog://ImageNetPretrained/FAIR/X-101-64x4d"
+  # WEIGHT: "https://api.ngc.nvidia.com/v2/models/nvidia/resnext101_32x4d_pyt_amp/versions/20.06.0/files/nvidia_resnext101-32x4d_200821.pth.tar"
+
+  BACKBONE:
+    CONV_BODY: "R-101-C4"
+  RESNETS:
+    BACKBONE_OUT_CHANNELS: 1024
+    STRIDE_IN_1X1: False
+    NUM_GROUPS: 64
+    WIDTH_PER_GROUP: 4
+  ROI_BOX_HEAD:
+    FEATURE_EXTRACTOR: "MEGAFeatureExtractor"
+    PREDICTOR: "FPNPredictor"
+DATASETS:
+  TRAIN: ("DET_train_30classes", "VID_train_15frames")
+  TEST: ("VID_val_videos",)

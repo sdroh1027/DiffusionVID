@@ -1,0 +1,13 @@
+ninja
+cython
+numpy<=1.23.5
+opencv-python<=4.3
+opencv-python-headless<=4.3
+scikit-image<=0.19.4,>=0.18
+albumentations<=1.2.2
+timm
+yacs
+tensorboard
+matplotlib
+tqdm
+scipy

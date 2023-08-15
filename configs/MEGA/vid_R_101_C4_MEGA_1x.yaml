@@ -1,0 +1,41 @@
+MODEL:
+  VID:
+    METHOD: "mega"
+    ROI_BOX_HEAD:
+      ATTENTION:
+        ENABLE: True  # local attention
+        STAGE: 3  # local attention stages
+    MEGA:
+      MIN_OFFSET: -12
+      MAX_OFFSET: 12
+      ALL_FRAME_INTERVAL: 25
+      KEY_FRAME_LOCATION: 12
+      SHUFFLED_CUR_TEST : False
+      LOCAL:
+        ENABLE: True  # local attention
+        PIXEL_ATTEND: False
+      MEMORY:
+        ENABLE: True  # long range memory
+        SIZE: 25
+      GLOBAL:
+        ENABLE: True  # global attention
+        RES_STAGE: 1
+        SIZE: 10  # global ref frames in initialization
+        STOP_UPDATE_AFTER_INIT_TEST: False
+        BOX_ATTEND: True
+        PIXEL_ATTEND: False
+        PIXEL_STAGE: 0
+      MHA: False
+      REF_NUM_GLOBAL: 2  # ref num in training phase
+      MEMORY_MANAGEMENT_METRIC: "queue"  # mamba, queue, distance
+      MEMORY_MANAGEMENT_TYPE: "none"  # once, twice, sequential, greedy, random
+  META_ARCHITECTURE: "GeneralizedRCNNMEGA"
+  WEIGHT: "catalog://ImageNetPretrained/MSRA/R-101"
+  BACKBONE:
+    CONV_BODY: "R-101-C4"
+  ROI_BOX_HEAD:
+    FEATURE_EXTRACTOR: "MEGAFeatureExtractor"
+    PREDICTOR: "FPNPredictor"
+DATASETS:
+  TRAIN: ("DET_train_30classes", "VID_train_15frames")
+  TEST: ("VID_val_videos",) #("YouTube_Objects",) #("VID_val_videos",)
