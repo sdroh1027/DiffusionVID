@@ -16,7 +16,7 @@ FGFA | ResNet-101 | 78.0 | [Google](https://drive.google.com/file/d/1yVgy7_ff1xV
 RDN-base | ResNet-101 | 81.1 | [Google](https://drive.google.com/file/d/1jM5LqlVtCGjKH-MocTCjzFIVjqCyng8M/view?usp=sharing)
 RDN | ResNet-101 | 81.7 | [Google](https://drive.google.com/file/d/1FgoOwj-GFAMVn2hkSFKnxn5fKWPSxlUF/view?usp=sharing)
 MEGA | ResNet-101 | 82.9 | [Google](https://drive.google.com/file/d/1ZnAdFafF1vW9Lnpw-RPF1AD_csw61lBY/view?usp=sharing)
-DAFA | ResNet-101 | 84.5 | 
+DAFA | ResNet-101 | 84.5 | [Google](https://drive.google.com/file/d/1fRuBW_FZkrYD6Cgtij2EukLPlf-spRhO/view?usp=sharing)
 **DiffusionVID (x1)** | ResNet-101 | 86.9 |[Google](https://drive.google.com/file/d/1HmPflEiJScpmcKP89C4jGs7-Z1Te0evp/view?usp=drive_link)
 **DiffusionVID (x4)** | ResNet-101 | 87.1 |
 **DiffusionVID (x1)** | Swin-Base  | 92.4 |[Google](https://drive.google.com/file/d/1wlUySKrNcUZdujGw1L4Q4V9KXyV14rQw/view?usp=drive_link)
