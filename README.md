@@ -5,6 +5,24 @@ By Si-Dong Roh (sdroh1027@naver.com) in Hanyang Univ.
 This project is an official implementation of "DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection", IEEE Access, 2023.
 
 ## Citing DiffusionVID
+If our code was helpful, please consider citing our works.
+
+    @ARTICLE{diffusionvid,
+    author={Roh, Si-Dong and Chung, Ki-Seok},
+    journal={IEEE Access}, 
+    title={DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection}, 
+    year={2023},
+    doi={10.1109/ACCESS.2023.3328341}}
+
+    @ARTICLE{dafa,
+    author={Roh, Si-Dong and Chung, Ki-Seok},
+    journal={IEEE Access}, 
+    title={DAFA: Diversity-Aware Feature Aggregation for Attention-Based Video Object Detection}, 
+    year={2022},
+    volume={10},
+    pages={93453-93463},
+    doi={10.1109/ACCESS.2022.3203399}}
+
 
 ## Main Results
 
