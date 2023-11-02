@@ -1,8 +1,10 @@
 # DiffusionVID for Video Object Detection
 
-By Si-Dong Roh (sdroh1027@naver.com) in Hanyang Univ.
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/diffusionvid-denoising-object-boxes-with/video-object-detection-on-imagenet-vid)](https://paperswithcode.com/sota/video-object-detection-on-imagenet-vid?p=diffusionvid-denoising-object-boxes-with)
 
-This project is an official implementation of "DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection", IEEE Access, 2023.
+By Si-Dong Roh (sdroh1027@naver.com), Ki-Seok Chung in Hanyang Univ.
+
+This project is an official implementation of "[DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection](https://ieeexplore.ieee.org/document/10299639)", IEEE Access, 2023.
 
 ## Citing DiffusionVID
 If our code was helpful, please consider citing our works.
