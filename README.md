@@ -2,7 +2,7 @@
 
 By Si-Dong Roh (sdroh1027@naver.com) in Hanyang Univ.
 
-This project is an official implementation of "DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection".
+This project is an official implementation of "DiffusionVID: Denoising Object Boxes with Spatio-temporal Conditioning for Video Object Detection", IEEE Access, 2023.
 
 ## Citing DiffusionVID
 
@@ -16,8 +16,11 @@ FGFA | ResNet-101 | 78.0 | [Google](https://drive.google.com/file/d/1yVgy7_ff1xV
 RDN-base | ResNet-101 | 81.1 | [Google](https://drive.google.com/file/d/1jM5LqlVtCGjKH-MocTCjzFIVjqCyng8M/view?usp=sharing)
 RDN | ResNet-101 | 81.7 | [Google](https://drive.google.com/file/d/1FgoOwj-GFAMVn2hkSFKnxn5fKWPSxlUF/view?usp=sharing)
 MEGA | ResNet-101 | 82.9 | [Google](https://drive.google.com/file/d/1ZnAdFafF1vW9Lnpw-RPF1AD_csw61lBY/view?usp=sharing)
-**DiffusionVID** | ResNet-101 | 86.9 |[Google](https://drive.google.com/file/d/1HmPflEiJScpmcKP89C4jGs7-Z1Te0evp/view?usp=drive_link)
-**DiffusionVID** | Swin-Base  | 92.4 |[Google](https://drive.google.com/file/d/1wlUySKrNcUZdujGw1L4Q4V9KXyV14rQw/view?usp=drive_link)
+DAFA | ResNet-101 | 84.5 | 
+**DiffusionVID (x1)** | ResNet-101 | 86.9 |[Google](https://drive.google.com/file/d/1HmPflEiJScpmcKP89C4jGs7-Z1Te0evp/view?usp=drive_link)
+**DiffusionVID (x4)** | ResNet-101 | 87.1 |
+**DiffusionVID (x1)** | Swin-Base  | 92.4 |[Google](https://drive.google.com/file/d/1wlUySKrNcUZdujGw1L4Q4V9KXyV14rQw/view?usp=drive_link)
+**DiffusionVID (x4)** | Swin-Base  | 92.5 |
 
 The link of previous models (single frame baseline, DFF, FGFA RDN, MEGA) are from MEGA.
 
@@ -50,7 +53,7 @@ Your pretrained models must be in here:
     
 ## Usage
 
-**Note**: Cache files will be created at the first time you run this project, this may take some time! Don't worry!
+**Note**: Cache files will be created at the first time you run this project, this may take some time.
 
 ### Inference
 
