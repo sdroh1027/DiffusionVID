@@ -6,6 +6,7 @@ import torch
 import numpy as np
 
 from mega_core.utils.imports import import_file
+from mega_core.modeling.detector.diffusion_det import DiffusionDet
 
 
 def align_and_update_state_dicts(model_state_dict, loaded_state_dict, flownet=False):
@@ -142,9 +143,9 @@ def load_state_dict(model, loaded_state_dict, flownet=False, skip_modules=None):
     # DataParallel or DistributedDataParallel during serialization,
     # remove the "module" prefix before performing the matching
     loaded_state_dict = strip_prefix_if_present(loaded_state_dict, prefix="module.")
-    #if skip_modules:
-    model_state_dict_keys = list(model.state_dict().keys())
-    loaded_state_dict = remove_modules(model_state_dict_keys, loaded_state_dict, skip_modules)
+    if isinstance(model, DiffusionDet):
+        model_state_dict_keys = list(model.state_dict().keys())
+        loaded_state_dict = remove_modules(model_state_dict_keys, loaded_state_dict, skip_modules)
     align_and_update_state_dicts(model_state_dict, loaded_state_dict, flownet=flownet)
 
     for name, param in model_state_dict.items():
