@@ -80,4 +80,4 @@ class VIDRDNDataset(VIDDataset):
         images["img_dir"] = self._img_dir
         images["transforms"] = self.transforms
 
-        return images, target, idx
+        return images, target, [idx]

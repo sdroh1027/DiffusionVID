@@ -78,7 +78,7 @@ def build_transforms(cfg, is_train=True):
                 T.Resize(min_size, max_size),
                 T.ToTensor(),
             ]
-        if cfg.MODEL.VID.METHOD in ("mega", "dafa"):
+        if cfg.MODEL.VID.METHOD not in ("diffusion"):
             trans_list.append(normalize_transform)
         transform = T.Compose(trans_list)
     return transform
