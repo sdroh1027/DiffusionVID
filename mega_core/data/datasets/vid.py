@@ -118,7 +118,7 @@ class VIDDataset(torch.utils.data.Dataset):
                 print("{}'s keep information loaded from {}".format(self.det_vid, cache_file))
             return keep
 
-        keep = np.zeros((len(self)), dtype=np.bool)
+        keep = np.zeros((len(self)), dtype=bool)
         for idx in range(len(self)):
             if idx % 10000 == 0:
                 print("Had filtered {} images".format(idx))
