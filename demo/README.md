@@ -35,7 +35,7 @@ If you want other methods, follow this:
     --output-folder visualization
 
     ## DAFA
-        python demo/demo.py configs/MEGA/vid_R_101_C4_DAFA_1x.yaml \
+    python demo/demo.py configs/MEGA/vid_R_101_C4_DAFA_1x.yaml \
     models/DAFA_F_R_101.pth \
     --visualize-path datasets/ILSVRC2015/Data/VID/val/ILSVRC2015_val_00016011 \
     --output-folder visualization
@@ -60,11 +60,5 @@ Example:
         --visualize-path datasets/ILSVRC2015/Data/VID/snippets/val/ILSVRC2015_val_00003001.mp4 \
         --output-folder visualization [--output-video]
 ```
-This will generate visualization result using single frame baseline with ResNet-101 backbone. And the results, images with generated bboxes, are saved in folder `visualization`. 
+This will generate visualization result using single frame baseline with ResNet-101 backbone. And the results, images with generated bboxes, are saved in folder `visualizations`. 
 
-Please note that:
-1) All you should know about has given above.
-
-## Misc
-
-Nothing more is needed?
