@@ -26,10 +26,11 @@ dist/
 .idea
 
 # vscode editor settings
-.vscode
+.vscode/
 
 # MacOS
 .DS_Store
 
 # project dirs
-/models
+models/
+visualizations/

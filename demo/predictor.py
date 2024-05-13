@@ -326,7 +326,7 @@ class VIDDemo(object):
             cfg,
             method="base",
             confidence_threshold=0.7,
-            output_folder="demo/visulaization"
+            output_folder="demo/visulaizations"
     ):
         self.cfg = cfg.clone()
         self.model = build_detection_model(cfg)
@@ -422,7 +422,7 @@ class VIDDemo(object):
 
         return image_list
 
-    def run_on_image_folder(self, image_folder, suffix='.JPEG', track_refs=False):
+    def run_on_image_folder(self, image_folder, suffix='.JPEG', track_refs=False, start_frame=0):
         image_names = glob.glob(image_folder + '/*' + suffix)
         image_names = sorted(image_names)
         image_set_index = [i.split(suffix)[0] for i in image_names]
@@ -452,7 +452,8 @@ class VIDDemo(object):
         self.cur_feat_nms_idx = []
         pil_transform = self.build_pil_transform()
         shuffled_indices = []
-        for idx in tqdm(range(frame_seg_len)):
+        start = start_frame  # start frame num.of the video
+        for idx in tqdm(range(start, frame_seg_len)):
             original_image = cv2.imread(image_names[idx])
             frame_id = int(image_set_index[idx].split("/")[-1])
             img_cur = self.perform_transform(original_image)
@@ -462,14 +463,14 @@ class VIDDemo(object):
             elif self.method in ("dff", "fgfa", "rdn", "mega", "dafa", "diffusion"):
                 infos = {}
                 infos["cur"] = img_cur
-                infos["frame_category"] = 0 if idx == 0 else 1
                 infos["seg_len"] = frame_seg_len
                 infos["pattern"] = pattern
                 infos["img_dir"] = img_dir
                 infos["transforms"] = pil_transform
 
                 infos["frame_id"] = frame_id
-                infos["start_id"] = 0  # dir id of the first frame of video
+                infos["start_id"] = start  # dir id of the first frame of video
+                infos["frame_category"] = 0 if idx == infos["start_id"] else 1
                 infos["end_id"] = frame_seg_len - 1  # dir id of the last frame of video
                 ref_id_final = min(frame_id + self.cfg.MODEL.VID.MEGA.MAX_OFFSET, frame_seg_len - 1)
                 infos["last_queue_id"] = ref_id_final
@@ -554,7 +555,13 @@ class VIDDemo(object):
                 else:
                     pass
 
+                self.model.mem_management_type = 'greedy'
                 image_with_boxes, predictions = self.run_on_image(original_image, infos, targets)
+                '''
+                self.model.mem_management_type = 'queue'
+                image_with_boxes2, predictions2 = self.run_on_image(original_image, infos, targets)
+                self.model.mem_management_type = 'greedy'
+                '''
                 if self.method in ["mega", "dafa"]:
                     self.affines.append(self.model.roi_heads.box.feature_extractor.affine)
                     self.contributors.append(self.model.roi_heads.box.feature_extractor.contributor)  # which ref feature in memory contributes most
@@ -574,16 +581,16 @@ class VIDDemo(object):
                 if self.method in ["dafa"]:
                     feat_idx_nms_sorted = self.cur_feat_nms_idx[-1][idx_sort]
                     cur_feat_sorted = self.cur_feat[-1][feat_idx_nms_sorted]
-                    contributors_each_feat = self.contributors[idx][feat_idx_nms_sorted]
+                    contributors_each_feat = self.contributors[idx - start][feat_idx_nms_sorted]
                     contributors_fid = []
                     for ref_fid in contributors_each_feat:
-                        contributors_fid.append(self.proposals_global[idx].extra_fields['frame_id'][ref_fid])
+                        contributors_fid.append(self.proposals_global[idx - start].extra_fields['frame_id'][ref_fid])
                     if track_refs:
                         # track top5 ref boxes per objects in frames
                         for i in range(num_predictions):
                             fids = contributors_fid[i]
                             mem_ids = contributors_each_feat[i]
-                            proposals_contrib = self.proposals_global_last[idx][mem_ids]
+                            proposals_contrib = self.proposals_global_last[idx - start][mem_ids]
                             for j in range(len(fids)):
                                 # draw ref bbox in their images
                                 assert proposals_contrib.extra_fields['frame_id'][j] == fids[j]
@@ -620,13 +627,13 @@ class VIDDemo(object):
 
         return images_with_boxes
 
-    def run_on_video(self, video_path):
+    def run_on_video(self, video_path, start_frame=0):
         if not os.path.isfile(video_path):
             raise FileNotFoundError('file "{}" does not exist'.format(video_path))
         self.vprocessor = VideoProcessor(video_path)
         tmpdir = tempfile.mkdtemp()
         self.vprocessor.cvt2frames(tmpdir)
-        results = self.run_on_image_folder(tmpdir, suffix='.jpg')
+        results = self.run_on_image_folder(tmpdir, suffix='.jpg', start_frame=start_frame)
 
         return results
 
@@ -646,6 +653,40 @@ class VIDDemo(object):
         result = image.copy()
         result = self.overlay_boxes(result, top_predictions)
         result = self.overlay_class_names(result, top_predictions)
+        if False:
+            from matplotlib import pyplot as plt
+            from PIL import Image
+            # plot cur frame (after)
+            ax = plt.gca()
+            ax.axes.xaxis.set_visible(False)
+            ax.axes.yaxis.set_visible(False)
+            plt.imshow(result, interpolation='nearest')
+            plt.show()
+            # plot cur frame (before)
+            self.model.demo_curbox = self.model.demo_curbox.resize([480, 360])
+            self.model.demo_refbox = self.model.demo_refbox.resize([480, 360])
+            img_cur = image.copy()
+            img_cur = self.overlay_boxes(img_cur, self.model.demo_curbox)
+            img_cur = self.overlay_class_names(img_cur, self.model.demo_curbox)
+            ax = plt.gca()
+            ax.axes.xaxis.set_visible(False)
+            ax.axes.yaxis.set_visible(False)
+            plt.imshow(img_cur, interpolation='nearest')
+            plt.show()
+            # plot ref frame (before)
+            for i in range(len(self.model.demo_refbox)):
+                refbox = self.model.demo_refbox[i:i+1]
+                img_ref = Image.open(infos['img_dir'] % (self.model.demo_imgdir % refbox.get_field("frame_id")[0])).convert("RGB")
+                img_ref = np.array(img_ref)
+                img_ref = self.overlay_boxes(img_ref, refbox)
+                img_ref = self.overlay_atten_score(img_ref, refbox)
+
+                ax = plt.gca()
+                ax.axes.xaxis.set_visible(False)
+                ax.axes.yaxis.set_visible(False)
+                plt.imshow(img_ref, interpolation='nearest')
+                plt.title('ref feat #{}'.format(i+1))
+                plt.show()
         if False:
             # print region proposal boxes
             rpn_result = self.rpn_proposals[:75]
@@ -775,9 +816,51 @@ class VIDDemo(object):
 
         return image
 
+    def overlay_atten_score(self, image, predictions):
+        """
+        Adds detected class names and scores in the positions defined by the
+        top-left corner of the predicted bounding box
+        Arguments:
+            image (np.ndarray): an image as returned by OpenCV
+            predictions (BoxList): the result of the computation by the model.
+                It should contain the field `scores` and `labels`.
+        """
+        scores = predictions.get_field("attention_prob").tolist()
+        fids = predictions.get_field("frame_id")
+        boxes = predictions.bbox
+        labels = predictions.get_field("labels")
+        box_colors = self.compute_colors_for_labels(labels).tolist()
+
+        template = "fid:{} attn:{:.2f}"
+        for box, score, fid, box_color in zip(boxes, scores, fids, box_colors):
+            x, y = box[:2]
+            s = template.format(fid, score)
+            self.draw_text(
+                 image, s, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2, tuple(box_color)
+            )
+
+        return image
+
     def generate_images(self, visualization_results):
         for frame_id in range(len(visualization_results)):
             cv2.imwrite(os.path.join(self.output_folder, "%06d.jpg" % frame_id), visualization_results[frame_id])
+
+        # zip image folder
+        import zipfile
+        import shutil
+        file_path = self.output_folder
+        last_path = file_path.split('/')[-1]
+        zip_file = zipfile.ZipFile(os.path.join(file_path, "..", last_path + ".zip"), "w")
+        for (path, dir, files) in os.walk(file_path):
+            for file in files:
+                if file.endswith('.jpg'):
+                    zip_file.write(os.path.join(path, file), compress_type=zipfile.ZIP_DEFLATED)
+
+        zip_file.close()
+
+        rm_dir_path = file_path
+        if os.path.exists(rm_dir_path):
+            shutil.rmtree(rm_dir_path)
 
     def generate_video(self, visualization_results):
         self.vprocessor.frames2videos(visualization_results, self.output_folder)

@@ -6,18 +6,21 @@ import matplotlib.cm as cm
 import pandas as pd
 import numpy as np
 
-def plot_TSNE(features_all, proposals_all, mem, class_labels):
+def plot_TSNE(features_all, proposals_all, class_labels, mem=None):
     tsne = TSNE(init='pca', learning_rate='auto')  # init='random' and lr=200.0 is default
 
-    features_all = torch.cat(features_all, dim=0).cpu()
-    proposals_all = torch.cat([b.bbox for b in proposals_all], dim=0)
-    mem_data = mem.cpu()
+    if len(features_all.shape) == 3:
+        features_all = torch.cat(features_all, dim=0)
+    # test if the type of proposals_all is torch.Tensor
+    if isinstance(proposals_all, list):
+        proposals_all = torch.cat([b.bbox for b in proposals_all], dim=0)
 
-    # find index by calculating minimum distance
-    dists, indexes = torch.cdist(mem_data, features_all).min(dim=-1)
+    features_all = features_all.cpu().numpy().tolist()
+    proposals_all = proposals_all.cpu().numpy()
+
     # 모델의 출력값을 tsne.fit_transform에 입력하기
-    pred_tsne = tsne.fit_transform(features_all)
-    mem_data_tsne = pred_tsne[indexes]
+    pred_tsne = tsne.fit_transform(np.array(features_all, dtype=np.float32))
+    mem_data_tsne = pred_tsne
 
     plt.cla()
     # plot all data points sampled
@@ -43,7 +46,7 @@ def plot_TSNE(features_all, proposals_all, mem, class_labels):
               'hotpink', 'crimson', 'pink', 'lightcoral', 'rosybrown']
     # colors = cm.prism(np.linspace(0, 1, 31))
     for cls, c in enumerate(colors):
-        tf_cls = class_labels == cls
+        tf_cls = (class_labels == cls).cpu()
         # plt.scatter(xs[tf_cls], ys[tf_cls], label=label_names[cls], c=c, cmap=plt.cm.rainbow, marker='.')
         plt.scatter(xs[tf_cls], ys[tf_cls], label=label_names[cls], c=colors[cls], marker='.')
     plt.legend(loc='upper left', bbox_to_anchor=(1.0, 1.0), fontsize='xx-small')
