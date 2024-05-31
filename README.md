@@ -51,6 +51,7 @@ Please follow [INSTALL.md](INSTALL.md) for installation instructions.
 ## Data preparation
 
 ~~Please download ILSVRC2015 DET and ILSVRC2015 VID dataset from [here](http://image-net.org/challenges/LSVRC/2015/2015-downloads).~~
+
 Now the official link for VID is expired. Please use this link: [here](https://drive.google.com/file/d/13iD3maoxiUEqeZmonODm3B03NCGCPJFh/view?usp=drive_link)
 
 After that, we recommend to symlink the path to the datasets to `datasets/`. And the path structure should be as follows:
